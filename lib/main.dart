@@ -37,7 +37,7 @@ class HomeController extends GetxController {
 
   bool isLoading = false;
 
-  static const OPERATING_CHAIN = 1;
+  static const OPERATING_CHAIN = 4;
 
   final wc = WalletConnectProvider.binance();
 
@@ -79,21 +79,21 @@ class HomeController extends GetxController {
         clear();
       });
       cnpContract = SmartContractBuilder(
-          nftContractAddress: "0x2fE776dD5fD2388F5ccaEFaD214989131B3A8d6b",
+          nftContractAddress: "0x0B51220AB29a78792e7A46Ca294416C93d6A0B6F",
           multiCallContractAddress:
               "0x5BA1e12693Dc8F9c48aAD8770482f4739bEeD696",
           rpcAddress:
-              "https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
-          contractAbi: cnpContractAbi,
+              "https://rinkeby.infura.io/v3/bc8e705aa911430ebd8dc6a63fb15efb",
+          contractAbi: youngApesContractAbi,
           multCallAbi: multCallAbi);
 
       fcnpContract = SmartContractBuilder(
-          nftContractAddress: "0x88525c2c15328C3Fe20dEF1868c3a7E8702B06b3",
+          nftContractAddress: "0x0B51220AB29a78792e7A46Ca294416C93d6A0B6F",
           multiCallContractAddress:
               "0x5BA1e12693Dc8F9c48aAD8770482f4739bEeD696",
           rpcAddress:
-              "https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
-          contractAbi: fcnpAbi,
+              "https://rinkeby.infura.io/v3/bc8e705aa911430ebd8dc6a63fb15efb",
+          contractAbi: youngApesContractAbi,
           multCallAbi: multCallAbi);
     }
   }
@@ -177,6 +177,17 @@ class HomeController extends GetxController {
     } catch (e) {
       Get.snackbar("Error", e.toString());
       return 0;
+    }
+  }
+
+  Future<List<dynamic>> whitelistedIdsOfWallet() async {
+    try {
+      var resp = await cnpContract
+          .contractCall("whitelistedIdsOfWallet", [currentAddress]);
+      return resp;
+    } catch (e) {
+      Get.snackbar("Error", e.toString());
+      return [BigInt.zero];
     }
   }
 
@@ -355,12 +366,12 @@ class HomeController extends GetxController {
   }
 
   Future<void> fetchAllPictures() async {
-    await fetchAddresses(cnpContract, cnpContractAbi, cnpNftPictures);
-    //print("[[[[[[[[cnp pictures generated]]]]]]]]]]]]]]]]]]]]]");
+    await fetchAddresses(cnpContract, youngApesContractAbi, cnpNftPictures);
+
     for (var item in cnpNftPictures) {
       print(item.id);
     }
-    //print("[[[[[[[[cnp pictures generated]]]]]]]]]]]]]]]]]]]]]");
+
     await fetchAddresses(fcnpContract, fcnpAbi, fcnpNftPictures);
     allPictures.clear();
     matchNfts(cnpNftPictures, fcnpNftPictures);
@@ -442,14 +453,14 @@ class Home extends StatelessWidget {
                             } else {
                               return mintBox(
                                   h.currentAddress.toString(),
-                                  "Get My Crypto Nouns",
-                                  h.fetchAllPictures,
+                                  "whitelistedIdsOfWallet",
+                                  h.whitelistedIdsOfWallet,
                                   Colors.green,
                                   context);
                             }
                           } else if (h.isConnected && !h.isInOperatingChain)
                             shown =
-                                'Wrong chain! Please connect to Main Ethereum Network. (1)';
+                                'Wrong chain! Please connect to Rinkeby Ethereum Network. (4)';
                           else if (Ethereum.isSupported)
                             return mintBox(
                                 "Please Connect Your Wallet",
