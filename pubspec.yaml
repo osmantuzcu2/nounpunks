@@ -1,0 +1,28 @@
+name: flutter_web3_example
+description: Demonstrates how to use the flutter_web3 plugin.
+publish_to: 'none' 
+
+environment:
+  sdk: ">=2.12.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  flutter_web3:
+  web3dart: ^2.3.3
+  flutter_awesome_buttons: ^1.1.0
+  http:
+  get:
+  cached_network_image: ^3.2.0
+  url_launcher:
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+
+  uses-material-design: true
+  assets:
+  - assets/
