@@ -6,6 +6,7 @@ import 'package:flutter_web3/flutter_web3.dart';
 import 'package:flutter_web3_example/abi.dart';
 import 'package:flutter_web3_example/fcnp.dart';
 import 'package:flutter_web3_example/multiCallAbi.dart';
+import 'package:flutter_web3_example/newui.dart';
 import 'package:flutter_web3_example/picture_model.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -82,11 +83,11 @@ class HomeController extends GetxController {
         clear();
       });
       youngApesContract = SmartContractBuilder(
-          nftContractAddress: "0x7aa27937304150a9A2923d7Bdc649079C8CE9eb0",
+          nftContractAddress: "0xC5aE96eF99832E0Cb8409877F47FbFed97004B79",
           multiCallContractAddress:
               "0x5BA1e12693Dc8F9c48aAD8770482f4739bEeD696",
           rpcAddress:
-              "https://rinkeby.infura.io/v3/bc8e705aa911430ebd8dc6a63fb15efb",
+              "https://mainnet.infura.io/v3/bc8e705aa911430ebd8dc6a63fb15efb",
           contractAbi: youngApesContractAbi,
           multCallAbi: multCallAbi);
     }
@@ -310,274 +311,131 @@ class Home extends StatelessWidget {
     return GetBuilder<HomeController>(
       init: HomeController(),
       builder: (h) => Scaffold(
+        backgroundColor: Colors.grey.shade400,
         body: Stack(
           children: [
-            Container(
-              width: screenW(1, context),
-              height: screenH(1, context),
-              child: Image.network(
-                "https://i.hizliresim.com/2a27s61.jpg",
-                fit: BoxFit.fill,
-              ),
-            ),
             SingleChildScrollView(
               child: Container(
+                margin: EdgeInsets.all(screenH(0.05, context)),
+                width: screenW(0.995, context),
+                padding: EdgeInsets.all(screenH(0.05, context)),
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(40)),
                 child: Center(
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                  child: Column(children: [
+                    Row(
                       children: [
-                        Container(height: 10),
-                        Builder(builder: (_) {
-                          var shown = '';
-                          if (h.isConnected && h.isInOperatingChain) {
-                            var isSelected = h.youngApesNftPictures
-                                .where((element) => element.selected == true);
-                            if (isSelected.isNotEmpty) {
-                              return mintBox(
-                                  h.currentAddress.toString(),
-                                  "Mint My Young Apes",
-                                  h.mintMyYoungApes,
-                                  Colors.yellow.shade900,
-                                  context);
-                            } else {
-                              return mintBox(
-                                  h.currentAddress.toString(),
-                                  "Get My Mintable Young Apes",
-                                  h.fetchAllPictures2,
-                                  Colors.green,
-                                  context);
-                            }
-                          } else if (h.isConnected && !h.isInOperatingChain)
-                            shown =
-                                'Wrong chain! Please connect to Rinkeby Ethereum Network. (4)';
-                          else if (Ethereum.isSupported)
-                            return mintBox(
-                                "Please Connect Your Wallet",
-                                "Connect Wallet",
-                                h.connectProvider,
-                                Colors.red,
-                                context);
-                          else
-                            shown =
-                                "Your browser is not supported or you haven't got crypto wallet.";
-                          return mintBox(shown, "Connect Wallet", () {},
-                              Colors.red, context);
-                        }),
-                        Container(height: 40),
-                        if (h.isConnected && h.isInOperatingChain) ...[
-                          h.youngApesNftPictures.length == 0
-                              ? Container()
-                              : Container(
-                                  width: screenW(
-                                      getScreenW(context) < 720 ? 0.9 : 0.75,
-                                      context),
-                                  child: GridView.count(
-                                    shrinkWrap: true,
-                                    crossAxisSpacing: 4,
-                                    primary: false,
-                                    crossAxisCount:
-                                        getScreenW(context) < 720 ? 1 : 3,
-                                    childAspectRatio: 10 / 6,
-                                    children: List.generate(
-                                        h.youngApesNftPictures.length, (index) {
-                                      return Container(
-                                        margin: EdgeInsets.all(2),
-                                        padding: EdgeInsets.all(8),
-                                        decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius:
-                                                BorderRadius.circular(10)),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Container(
-                                              width: screenW(
-                                                  getScreenW(context) < 720
-                                                      ? 0.35
-                                                      : 0.1,
-                                                  context),
-                                              height: screenW(
-                                                  getScreenW(context) < 720
-                                                      ? 0.45
-                                                      : 0.15,
-                                                  context),
-                                              child: InkWell(
-                                                onTap: () {
-                                                  if (h
-                                                          .youngApesNftPictures[
-                                                              index]
-                                                          .minted ==
-                                                      false)
-                                                    h.toggleSelected(index);
-                                                },
-                                                child: Container(
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            4.0),
-                                                    child: h.youngApesNftPictures
-                                                            .isEmpty
-                                                        ? Container()
-                                                        : h.youngApesNftPictures[index].selected ==
-                                                                    true ||
-                                                                h.youngApesNftPictures[index]
-                                                                        .minted ==
-                                                                    true
-                                                            ? Stack(
-                                                                children: [
-                                                                  Column(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .center,
-                                                                    children: [
-                                                                      CachedNetworkImage(
-                                                                        imageUrl: h.tokenURI +
-                                                                            h.youngApesNftPictures[index].id.toString() +
-                                                                            ".png",
-                                                                        placeholder:
-                                                                            (context, url) =>
-                                                                                new CircularProgressIndicator(),
-                                                                      ),
-                                                                      Padding(
-                                                                        padding:
-                                                                            const EdgeInsets.all(8.0),
-                                                                        child: Text(
-                                                                            "YoungApes#" +
-                                                                                h.youngApesNftPictures[index].id.toString(),
-                                                                            style: scaleable(context)),
-                                                                      )
-                                                                    ],
-                                                                  ),
-                                                                  Row(
-                                                                    children: [
-                                                                      Expanded(
-                                                                        child:
-                                                                            Container(
-                                                                          color: Colors
-                                                                              .white
-                                                                              .withOpacity(0.5),
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                  if (h.youngApesNftPictures[index]
-                                                                          .minted ==
-                                                                      false)
-                                                                    Icon(
-                                                                      Icons
-                                                                          .add_task_sharp,
-                                                                      color: Colors
-                                                                          .yellow,
-                                                                      size: 48,
-                                                                    )
-                                                                ],
-                                                              )
-                                                            : Stack(
-                                                                children: [
-                                                                  Column(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .center,
-                                                                    children: [
-                                                                      CachedNetworkImage(
-                                                                        imageUrl: h.tokenURI +
-                                                                            h.youngApesNftPictures[index].id.toString() +
-                                                                            ".png",
-                                                                        placeholder:
-                                                                            (context, url) =>
-                                                                                new CircularProgressIndicator(),
-                                                                      ),
-                                                                      Padding(
-                                                                        padding:
-                                                                            const EdgeInsets.all(8.0),
-                                                                        child:
-                                                                            Text(
-                                                                          "YoungApes#" +
-                                                                              h.youngApesNftPictures[index].id.toString(),
-                                                                          style:
-                                                                              scaleable(context),
-                                                                        ),
-                                                                      )
-                                                                    ],
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                            /*  h.youngApesNftPictures.isEmpty ||
-                                                    h
-                                                            .allPictures[index]
-                                                            .fcnpPicture!
-                                                            .minted ==
-                                                        false
-                                                ? Icon(
-                                                    Icons.change_circle,
-                                                    color: Colors.green,
-                                                    size: 36,
-                                                  )
-                                                : Icon(
-                                                    Icons.change_circle,
-                                                    color: Colors.grey,
-                                                    size: 36,
-                                                  ),
-                                            h.tokenURI2 == ""
-                                                ? secret()
-                                                : h.allPictures.isEmpty ||
-                                                        h
-                                                                .allPictures[
-                                                                    index]
-                                                                .fcnpPicture!
+                        Expanded(
+                            flex: 2,
+                            child: InkWell(
+                                onTap: () {
+                                  h.openURL("https://yungapesquad.com/");
+                                },
+                                child: Image.asset("assets/logo1.png"))),
+                        Expanded(
+                          flex: getScreenW(context) < 720 ? 5 : 16,
+                          child: Container(),
+                        )
+                      ],
+                    ),
+                    Container(height: 10),
+                    Builder(builder: (_) {
+                      var shown = '';
+                      if (h.isConnected && h.isInOperatingChain) {
+                        var isSelected = h.youngApesNftPictures
+                            .where((element) => element.selected == true);
+                        if (isSelected.isNotEmpty) {
+                          return mintBox(
+                              h.currentAddress.toString(),
+                              "Mint My Yung Apes",
+                              h.mintMyYoungApes,
+                              Colors.yellow,
+                              context);
+                        } else {
+                          return mintBox(
+                              h.currentAddress.toString(),
+                              "Get My Mintable Yung Apes",
+                              h.fetchAllPictures2,
+                              Colors.white,
+                              context);
+                        }
+                      } else if (h.isConnected && !h.isInOperatingChain)
+                        shown =
+                            'Wrong chain! Please connect to Rinkeby Ethereum Network. (4)';
+                      else if (Ethereum.isSupported)
+                        return mintBox(
+                            "Please Connect Your Wallet",
+                            "Connect Wallet",
+                            h.connectProvider,
+                            Colors.red,
+                            context);
+                      else
+                        shown =
+                            "Your browser is not supported or you haven't got crypto wallet.";
+                      return mintBox(
+                          shown, "Connect Wallet", () {}, Colors.red, context);
+                    }),
+                    Container(height: 40),
+                    if (h.isConnected && h.isInOperatingChain) ...[
+                      h.youngApesNftPictures.length == 0
+                          ? Container()
+                          : Container(
+                              width: screenW(
+                                  getScreenW(context) < 720 ? 0.9 : 0.75,
+                                  context),
+                              child: GridView.count(
+                                shrinkWrap: true,
+                                crossAxisSpacing: 0,
+                                primary: false,
+                                crossAxisCount:
+                                    getScreenW(context) < 720 ? 1 : 8,
+                                childAspectRatio: 8 / 10,
+                                children: List.generate(
+                                    h.youngApesNftPictures.length, (index) {
+                                  return Container(
+                                    margin: EdgeInsets.all(2),
+                                    decoration: BoxDecoration(
+                                        //kirmizi
+                                        //color: Colors.red,
+                                        ),
+                                    child: Container(
+                                      width: screenW(
+                                          getScreenW(context) < 720
+                                              ? 0.1
+                                              : 0.05,
+                                          context),
+                                      child: InkWell(
+                                        onTap: () {
+                                          if (h.youngApesNftPictures[index]
+                                                  .minted ==
+                                              false) h.toggleSelected(index);
+                                        },
+                                        child: Container(
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(4.0),
+                                            child: h.youngApesNftPictures
+                                                    .isEmpty
+                                                ? Container()
+                                                : h.youngApesNftPictures[index]
+                                                                .selected ==
+                                                            true ||
+                                                        h.youngApesNftPictures[index]
                                                                 .minted ==
-                                                            false
-                                                    ? secret()
-                                                    : Container(
-                                                        width: screenW(
-                                                            getScreenW(context) <
-                                                                    720
-                                                                ? 0.35
-                                                                : 0.1,
-                                                            context),
-                                                        height: screenW(
-                                                            getScreenW(context) <
-                                                                    720
-                                                                ? 0.45
-                                                                : 0.15,
-                                                            context),
-                                                        child: Column(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .center,
-                                                          children: [
-                                                            InkWell(
-                                                              onTap: () {
-                                                                print("https://opensea.io/assets/0x88525c2c15328c3fe20def1868c3a7e8702b06b3/" +
-                                                                    h
-                                                                        .allPictures[
-                                                                            index]
-                                                                        .fcnpPicture!
-                                                                        .id
-                                                                        .toString());
-                                                                h.openURL("https://opensea.io/assets/0x88525c2c15328c3fe20def1868c3a7e8702b06b3/" +
-                                                                    h
-                                                                        .allPictures[
-                                                                            index]
-                                                                        .fcnpPicture!
-                                                                        .id
-                                                                        .toString());
-                                                              },
-                                                              child:
-                                                                  CachedNetworkImage(
+                                                            true
+                                                    ? Stack(
+                                                        children: [
+                                                          Column(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            children: [
+                                                              CachedNetworkImage(
                                                                 imageUrl: h
-                                                                        .tokenURI2 +
+                                                                        .tokenURI +
                                                                     h
-                                                                        .allPictures[
+                                                                        .youngApesNftPictures[
                                                                             index]
-                                                                        .fcnpPicture!
                                                                         .id
                                                                         .toString() +
                                                                     ".png",
@@ -585,35 +443,125 @@ class Home extends StatelessWidget {
                                                                         url) =>
                                                                     new CircularProgressIndicator(),
                                                               ),
-                                                            ),
-                                                            Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .all(8.0),
-                                                              child: Text(
-                                                                "FCNP#" +
-                                                                    h
-                                                                        .allPictures[
-                                                                            index]
-                                                                        .fcnpPicture!
-                                                                        .id
-                                                                        .toString(),
-                                                                style: scaleable(
-                                                                    context),
+                                                              Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .all(
+                                                                        8.0),
+                                                                child: Text(
+                                                                    "YungApes#" +
+                                                                        h.youngApesNftPictures[index].id
+                                                                            .toString(),
+                                                                    style: scaleable(
+                                                                        context)),
+                                                              )
+                                                            ],
+                                                          ),
+                                                          Row(
+                                                            children: [
+                                                              Expanded(
+                                                                child:
+                                                                    Container(
+                                                                  color: Colors
+                                                                      .white
+                                                                      .withOpacity(
+                                                                          0.5),
+                                                                ),
                                                               ),
+                                                            ],
+                                                          ),
+                                                          if (h
+                                                                  .youngApesNftPictures[
+                                                                      index]
+                                                                  .minted ==
+                                                              false)
+                                                            Icon(
+                                                              Icons
+                                                                  .add_task_sharp,
+                                                              color:
+                                                                  Colors.yellow,
+                                                              size: 48,
                                                             )
-                                                          ],
-                                                        ),
-                                                      ) */
-                                          ],
+                                                        ],
+                                                      )
+                                                    : Stack(
+                                                        children: [
+                                                          Column(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            children: [
+                                                              CachedNetworkImage(
+                                                                imageUrl: h
+                                                                        .tokenURI +
+                                                                    h
+                                                                        .youngApesNftPictures[
+                                                                            index]
+                                                                        .id
+                                                                        .toString() +
+                                                                    ".png",
+                                                                placeholder: (context,
+                                                                        url) =>
+                                                                    new CircularProgressIndicator(),
+                                                              ),
+                                                              Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .all(
+                                                                        8.0),
+                                                                child: Text(
+                                                                  "YungApes#" +
+                                                                      h.youngApesNftPictures[index]
+                                                                          .id
+                                                                          .toString(),
+                                                                  style: scaleable(
+                                                                      context),
+                                                                ),
+                                                              )
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      ),
+                                          ),
                                         ),
-                                      );
-                                    }),
-                                  ),
-                                ),
+                                      ),
+                                    ),
+                                  );
+                                }),
+                              ),
+                            ),
+                    ],
+                    Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            flex: 16,
+                            child: Container(),
+                          ),
+                          Expanded(
+                              flex: 1,
+                              child: InkWell(
+                                  onTap: () {
+                                    h.openURL(
+                                        "https://twitter.com/yungapesquad");
+                                  },
+                                  child: Image.asset("assets/tw.png"))),
+                          Expanded(
+                              flex: 2,
+                              child: InkWell(
+                                  onTap: () {
+                                    h.openURL("https://discord.gg/yungapes");
+                                  },
+                                  child: Image.asset("assets/discord.png"))),
+                          Expanded(
+                            flex: 16,
+                            child: Container(),
+                          )
                         ],
-                        Container(height: 30),
-                      ]),
+                      ),
+                    ),
+                  ]),
                 ),
               ),
             ),
@@ -645,7 +593,48 @@ class Home extends StatelessWidget {
 
   Widget mintBox(
       String maintext, String buttonText, func, Color buttonColor, context) {
-    return Container(
+    return Column(
+      children: [
+        Container(
+          color: yapeBlack,
+          margin: EdgeInsets.symmetric(
+              horizontal:
+                  screenW(getScreenW(context) < 1000 ? 0.04 : 0.2, context)),
+          padding: EdgeInsets.all(16),
+          child: Center(
+            child: Text(
+              maintext,
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: getScreenW(context) < 1000 ? 11 : 16),
+            ),
+          ),
+        ),
+        Container(
+          height: 10,
+        ),
+        InkWell(
+          onTap: func,
+          child: Container(
+            color: yapeBlack,
+            margin: EdgeInsets.symmetric(
+                horizontal:
+                    screenW(getScreenW(context) < 1000 ? 0.2 : 0.2, context)),
+            padding: EdgeInsets.all(16),
+            child: Center(
+              child: Text(
+                buttonText,
+                style: TextStyle(
+                    color: buttonColor,
+                    fontSize: getScreenW(context) < 1000 ? 11 : 14),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+
+    /*   Container(
       width: screenW(getScreenW(context) < 720 ? 1 : 0.6, context),
       height: screenW(getScreenW(context) < 720 ? 0.4 : 0.18, context),
       decoration: BoxDecoration(
@@ -706,6 +695,7 @@ class Home extends StatelessWidget {
         ],
       ),
     );
+   */
   }
 
   TextStyle fstylew() => TextStyle(color: Colors.white, fontSize: 14);

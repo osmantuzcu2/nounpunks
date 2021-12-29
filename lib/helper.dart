@@ -10,6 +10,8 @@ import 'package:convert/convert.dart';
 //Toast.show('Toast plugin app', context, duration: Toast.LENGTH_SHORT, gravity:  Toast.BOTTOM);
 final Color koyu = HexColor('#241635');
 final Color yesil = HexColor('#45ff83');
+final Color yapeBlack = HexColor('#202020');
+final Color yapeBack = HexColor('#E5E5E5');
 
 class HexColor extends Color {
   static int _getColorFromHex(String hexColor) {
