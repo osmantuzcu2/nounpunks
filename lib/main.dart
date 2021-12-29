@@ -1,17 +1,9 @@
-import 'dart:convert';
-
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_web3/flutter_web3.dart';
-import 'package:flutter_web3_example/abi.dart';
-import 'package:flutter_web3_example/fcnp.dart';
 import 'package:flutter_web3_example/multiCallAbi.dart';
-import 'package:flutter_web3_example/picture_model.dart';
 import 'package:flutter_web3_example/youngapeAbi.dart';
 import 'package:get/get.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:web3dart/web3dart.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
 
 import 'helper.dart';
@@ -132,8 +124,7 @@ class HomeController extends GetxController {
 
     for (var i = 0; i < masterChefCallResponseList.length; i++) {
       print(masterChefCallResponseList[i].hex);
-      wallets =
-          wallets! + '"' + masterChefCallResponseList[i].hex.toString() + '",';
+      wallets = wallets! + masterChefCallResponseList[i].hex.toString() + ',';
     }
     update();
   }
