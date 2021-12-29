@@ -41,27 +41,6 @@ double screenH(double hheight, context) {
   return MediaQuery.of(context).size.height * hheight;
 }
 
-//duration only hh:mm:nn
-String formatDur(Duration d) => d.toString().split('.').first.padLeft(8, '0');
-
-//exit
-Widget areYouSure(context, String text, Function func) {
-  return AlertDialog(
-    title: Text('Emin misiniz?'),
-    content: Text(text),
-    actions: <Widget>[
-      TextButton(
-        onPressed: () => Get.back(),
-        child: Text('Hayır'),
-      ),
-      TextButton(
-        onPressed: () => func,
-        child: Text('Evet'),
-      ),
-    ],
-  );
-}
-
 class SmartContractBuilder {
   String nftContractAddress;
   String multiCallContractAddress;
