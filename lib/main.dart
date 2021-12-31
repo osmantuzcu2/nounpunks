@@ -22,7 +22,7 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) =>
-      GetMaterialApp(title: 'Flip Your Crypto Nouns', home: Home());
+      GetMaterialApp(title: 'Claim Page', home: Home());
 }
 
 class HomeController extends GetxController {
@@ -37,8 +37,6 @@ class HomeController extends GetxController {
   bool wcConnected = false;
 
   bool isLoading = false;
-
-  static const OPERATING_CHAIN = 4;
 
   final wc = WalletConnectProvider.binance();
 
@@ -70,6 +68,9 @@ class HomeController extends GetxController {
     update();
   }
 
+  static const OPERATING_CHAIN = 1;
+  String chainError =
+      'Wrong chain! Please connect to Main Ethereum Network. (1)';
   var youngApesContract;
   init() {
     if (Ethereum.isSupported) {
@@ -84,10 +85,13 @@ class HomeController extends GetxController {
       });
       youngApesContract = SmartContractBuilder(
           nftContractAddress: "0xC5aE96eF99832E0Cb8409877F47FbFed97004B79",
+          //rink
+          //0x0B51220AB29a78792e7A46Ca294416C93d6A0B6F
+          //main
+          //0xC5aE96eF99832E0Cb8409877F47FbFed97004B79
           multiCallContractAddress:
               "0x5BA1e12693Dc8F9c48aAD8770482f4739bEeD696",
-          rpcAddress:
-              "https://mainnet.infura.io/v3/bc8e705aa911430ebd8dc6a63fb15efb",
+          rpcAddress: ethereumRpcAddress,
           contractAbi: youngApesContractAbi,
           multCallAbi: multCallAbi);
     }
@@ -273,6 +277,7 @@ class HomeController extends GetxController {
           minted: masterChefCallResponseList[i],
           selected: false));
     }
+
     isLoading = false;
     update();
   }
@@ -311,7 +316,7 @@ class Home extends StatelessWidget {
     return GetBuilder<HomeController>(
       init: HomeController(),
       builder: (h) => Scaffold(
-        backgroundColor: Colors.grey.shade400,
+        backgroundColor: Colors.white,
         body: Stack(
           children: [
             SingleChildScrollView(
@@ -319,27 +324,26 @@ class Home extends StatelessWidget {
                 margin: EdgeInsets.all(screenH(0.05, context)),
                 width: screenW(0.995, context),
                 padding: EdgeInsets.all(screenH(0.05, context)),
+                constraints: BoxConstraints(minHeight: screenH(0.9, context)),
                 decoration: BoxDecoration(
                     color: Colors.white,
+                    image: DecorationImage(
+                        image: AssetImage("assets/apeback.png"),
+                        fit: BoxFit.cover),
                     borderRadius: BorderRadius.circular(40)),
                 child: Center(
                   child: Column(children: [
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Expanded(
-                            flex: 2,
-                            child: InkWell(
-                                onTap: () {
-                                  h.openURL("https://yungapesquad.com/");
-                                },
-                                child: Image.asset("assets/logo1.png"))),
-                        Expanded(
-                          flex: getScreenW(context) < 720 ? 5 : 16,
-                          child: Container(),
-                        )
+                        InkWell(
+                            onTap: () {
+                              h.openURL("https://yungapesquad.com/");
+                            },
+                            child: Image.asset("assets/logo3.png")),
                       ],
                     ),
-                    Container(height: 10),
+                    Container(height: 30),
                     Builder(builder: (_) {
                       var shown = '';
                       if (h.isConnected && h.isInOperatingChain) {
@@ -350,25 +354,24 @@ class Home extends StatelessWidget {
                               h.currentAddress.toString(),
                               "Mint My Yung Apes",
                               h.mintMyYoungApes,
-                              Colors.yellow,
+                              sari,
                               context);
                         } else {
                           return mintBox(
                               h.currentAddress.toString(),
                               "Get My Mintable Yung Apes",
                               h.fetchAllPictures2,
-                              Colors.white,
+                              mor,
                               context);
                         }
                       } else if (h.isConnected && !h.isInOperatingChain)
-                        shown =
-                            'Wrong chain! Please connect to Rinkeby Ethereum Network. (4)';
+                        shown = h.chainError;
                       else if (Ethereum.isSupported)
                         return mintBox(
                             "Please Connect Your Wallet",
                             "Connect Wallet",
                             h.connectProvider,
-                            Colors.red,
+                            kirmizi,
                             context);
                       else
                         shown =
@@ -463,7 +466,7 @@ class Home extends StatelessWidget {
                                                                 child:
                                                                     Container(
                                                                   color: Colors
-                                                                      .white
+                                                                      .black
                                                                       .withOpacity(
                                                                           0.5),
                                                                 ),
@@ -546,14 +549,14 @@ class Home extends StatelessWidget {
                                     h.openURL(
                                         "https://twitter.com/yungapesquad");
                                   },
-                                  child: Image.asset("assets/tw.png"))),
+                                  child: Image.asset("assets/tw3.png"))),
                           Expanded(
                               flex: 2,
                               child: InkWell(
                                   onTap: () {
                                     h.openURL("https://discord.gg/yungapes");
                                   },
-                                  child: Image.asset("assets/discord.png"))),
+                                  child: Image.asset("assets/discord2.png"))),
                           Expanded(
                             flex: 16,
                             child: Container(),
@@ -596,7 +599,7 @@ class Home extends StatelessWidget {
     return Column(
       children: [
         Container(
-          color: yapeBlack,
+          color: Colors.white,
           margin: EdgeInsets.symmetric(
               horizontal:
                   screenW(getScreenW(context) < 1000 ? 0.04 : 0.2, context)),
@@ -605,7 +608,7 @@ class Home extends StatelessWidget {
             child: Text(
               maintext,
               style: TextStyle(
-                  color: Colors.white,
+                  color: Colors.black,
                   fontSize: getScreenW(context) < 1000 ? 11 : 16),
             ),
           ),
@@ -613,23 +616,28 @@ class Home extends StatelessWidget {
         Container(
           height: 10,
         ),
-        InkWell(
-          onTap: func,
-          child: Container(
-            color: yapeBlack,
-            margin: EdgeInsets.symmetric(
-                horizontal:
-                    screenW(getScreenW(context) < 1000 ? 0.2 : 0.2, context)),
-            padding: EdgeInsets.all(16),
-            child: Center(
-              child: Text(
-                buttonText,
-                style: TextStyle(
-                    color: buttonColor,
-                    fontSize: getScreenW(context) < 1000 ? 11 : 14),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            InkWell(
+              onTap: func,
+              child: Container(
+                color: buttonColor,
+                margin: EdgeInsets.symmetric(
+                    horizontal: screenW(
+                        getScreenW(context) < 1000 ? 0.2 : 0.2, context)),
+                padding: EdgeInsets.all(16),
+                child: Center(
+                  child: Text(
+                    buttonText,
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: getScreenW(context) < 1000 ? 11 : 14),
+                  ),
+                ),
               ),
             ),
-          ),
+          ],
         ),
       ],
     );
@@ -701,7 +709,7 @@ class Home extends StatelessWidget {
   TextStyle fstylew() => TextStyle(color: Colors.white, fontSize: 14);
   TextStyle fstyleb() => TextStyle(color: Colors.black, fontSize: 14);
   TextStyle scaleable(context) => TextStyle(
-      color: Colors.black,
+      color: Colors.white,
       fontSize: screenW(getScreenW(context) < 720 ? 0.035 : 0.01, context));
 }
 

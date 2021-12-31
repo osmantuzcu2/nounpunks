@@ -8,10 +8,10 @@ import 'package:convert/convert.dart';
 
 //Toast message
 //Toast.show('Toast plugin app', context, duration: Toast.LENGTH_SHORT, gravity:  Toast.BOTTOM);
-final Color koyu = HexColor('#241635');
-final Color yesil = HexColor('#45ff83');
-final Color yapeBlack = HexColor('#202020');
-final Color yapeBack = HexColor('#E5E5E5');
+final Color mor = HexColor('#6C20B9');
+final Color kirmizi = HexColor('#F02727');
+final Color yapeBlack = HexColor('#F02727');
+final Color sari = HexColor('##B6B920');
 
 class HexColor extends Color {
   static int _getColorFromHex(String hexColor) {
@@ -181,3 +181,8 @@ class Call {
 
   Call({this.address = "", this.name = "", this.params});
 }
+
+String ethereumRpcAddress =
+    "https://mainnet.infura.io/v3/bc8e705aa911430ebd8dc6a63fb15efb";
+String rinkebyRpcAddress =
+    "https://rinkeby.infura.io/v3/bc8e705aa911430ebd8dc6a63fb15efb";
