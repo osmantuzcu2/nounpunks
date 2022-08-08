@@ -1,3 +1,2 @@
-# flutter_web3_example
+# flutter_nft_mint_example
 
-Demonstrates how to use the flutter_web3 plugin.
